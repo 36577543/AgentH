@@ -7,13 +7,13 @@
 #include "AgentH.h"
 #include "AgentHDlg.h"
 #include "afxdialogex.h"
+#include "Tool.h"
+#include <fstream>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
-
-// 用于应用程序“关于”菜单项的 CAboutDlg 对话框
 
 class CAboutDlg : public CDialogEx
 {
@@ -46,10 +46,6 @@ BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
 END_MESSAGE_MAP()
 
 
-// CAgentHDlg 对话框
-
-
-
 CAgentHDlg::CAgentHDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_AGENTH_DIALOG, pParent)
 {
@@ -65,10 +61,9 @@ BEGIN_MESSAGE_MAP(CAgentHDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
+	ON_BN_CLICKED(IDD_BTN_CAPTURE, &CAgentHDlg::OnBnClickedBtnCapture)
 END_MESSAGE_MAP()
 
-
-// CAgentHDlg 消息处理程序
 
 BOOL CAgentHDlg::OnInitDialog()
 {
@@ -117,10 +112,6 @@ void CAgentHDlg::OnSysCommand(UINT nID, LPARAM lParam)
 	}
 }
 
-// 如果向对话框添加最小化按钮，则需要下面的代码
-//  来绘制该图标。  对于使用文档/视图模型的 MFC 应用程序，
-//  这将由框架自动完成。
-
 void CAgentHDlg::OnPaint()
 {
 	if (IsIconic())
@@ -146,10 +137,17 @@ void CAgentHDlg::OnPaint()
 	}
 }
 
-//当用户拖动最小化窗口时系统调用此函数取得光标
-//显示。
 HCURSOR CAgentHDlg::OnQueryDragIcon()
 {
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+void CAgentHDlg::OnBnClickedBtnCapture()
+{
+	HWND hwnd;
+	std::vector<BYTE> image = CaptureWindowToBitmap(NULL);
+
+	std::ofstream ofs("image.bmp");
+	ofs.write((char*)image.data(), image.size());
+	ofs.close();
+}

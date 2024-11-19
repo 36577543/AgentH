@@ -6,6 +6,10 @@
 #include "framework.h"
 #include "AgentH.h"
 #include "AgentHDlg.h"
+#include <log4cplus/logger.h>
+#include <log4cplus/loggingmacros.h>
+#include <log4cplus/configurator.h>
+#include <log4cplus/initializer.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -39,6 +43,12 @@ BOOL CAgentHApp::InitInstance()
 {
 	CWinApp::InitInstance();
 
+	if (!PathFileExists("log"))
+		CreateDirectory("log", NULL);
+	log4cplus::Initializer initializer;
+	log4cplus::PropertyConfigurator::doConfigure("log4cplus.conf");
+	log4cplus::Logger logger = log4cplus::Logger::getInstance("main");
+	LOG4CPLUS_INFO(logger, "App start");
 
 	// 创建 shell 管理器，以防对话框包含
 	// 任何 shell 树视图控件或 shell 列表视图控件。
